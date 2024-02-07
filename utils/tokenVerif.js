@@ -19,7 +19,7 @@ const User = require('../models/user')
             try {
                 const user = await User.findById(decoded.user._id)
         // User doesn't exist anymore: return error
-                if(!user) return res.status(404).json({message: "User not found"})
+                if(!user) return res.status(404).json({message: "User not found", user:decoded.user})
         // Valid user, regenerate token and pass on the info to next middleware
                 const accessToken = jwt.sign({user}, process.env.SECRET, { expiresIn: '24h'}); 
                 req.user = user

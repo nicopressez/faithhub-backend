@@ -40,6 +40,10 @@ upload.single("profile_picture"),
         const user = await User.findById(req.params.id)
 // Check differences between user info and form info and apply changes
         if(req.body.username !== user.username){
+            // Check if username already taken before updating it
+            const usernameUsed = User.find({username: req.body.username})
+            if (usernameUsed[0]) return res.status(401).json({message: "Username already in use"})
+
             await User.findByIdAndUpdate(req.params.id, {username: req.body.username})
         }
         if(req.body.first_name !== user.first_name){

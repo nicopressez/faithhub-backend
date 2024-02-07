@@ -47,6 +47,12 @@ exports.signup = [
         if(!errors.isEmpty) {
            res.status(400).json({errors: errors.array()});
         }
+
+        // Check if username already taken before proceeding
+        const usernameUsed = await User.find({username: req.body.username});
+        if (usernameUsed) return res.status(401).json({message:"Username already in use"})
+
+        // Username not used, continue with signup
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
         const user = new User({
@@ -62,7 +68,7 @@ exports.signup = [
         const token = jwt.sign(
             {user:userSaved.username}, process.env.SECRET, 
             {expiresIn: "24h"});
-        res.status(200).json({user:userSaved, token})
+        res.status(200).json({token})
     })]
 
 exports.login = [
