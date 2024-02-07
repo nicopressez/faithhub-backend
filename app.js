@@ -8,6 +8,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+const profileRouter = require('./routes/profile')
 
 var app = express();
 var cors = require('cors')
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors())
+
 // Passport setup
 const passport = require("./utils/passport");
 app.use(session({
@@ -44,6 +46,7 @@ app.use(express.json());
 // Routes
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
+app.use('/profile', profileRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
