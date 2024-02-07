@@ -45,7 +45,7 @@ exports.signup = [
 // Validate form
         const errors = validationResult(req);
         if(!errors.isEmpty) {
-            return res.status(400).json({errors: errors.array()});
+           res.status(400).json({errors: errors.array()});
         }
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
@@ -68,13 +68,32 @@ exports.signup = [
 exports.login = [
     passport.authenticate("local"),
     asyncHandler(async(req,res,next) => {
-    const user = req.body.username;
+    const user = await User.find({username: req.body.username}).exec();
     const secret = process.env.SECRET;
     const token = jwt.sign({user}, secret, { expiresIn: '24h'});
-    return res.status(200).json({
+    res.status(200).json({
         message: "Auth passed",
         token
     })
 })]
 
-exports.logout = asyncHandler(async(req,res,next));
+exports.refresh_token = asyncHandler(async(req,res,next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) return res.status(401).json({message: "No token provided"})
+
+    jwt.verify(token, process.env.SECRET, (err,user) => {
+        if (err){
+            if (err.name === 'TokenExpiredError'){
+                return res.status(401).json({message: "Token expired"})};
+            return res.status(401).json({ message: "Invalid token" });
+        }
+
+        delete user.iat;
+        delete user.exp;
+
+        const accessToken = jwt.sign({user}, process.env.SECRET, { expiresIn: '24h'});
+        res.status(200).json({accessToken})
+    })
+})
