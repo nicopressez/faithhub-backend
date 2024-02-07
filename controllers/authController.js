@@ -76,24 +76,3 @@ exports.login = [
         token
     })
 })]
-
-exports.refresh_token = asyncHandler(async(req,res,next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]
-
-    if (token == null) return res.status(401).json({message: "No token provided"})
-
-    jwt.verify(token, process.env.SECRET, (err,user) => {
-        if (err){
-            if (err.name === 'TokenExpiredError'){
-                return res.status(401).json({message: "Token expired"})};
-            return res.status(401).json({ message: "Invalid token" });
-        }
-
-        delete user.iat;
-        delete user.exp;
-
-        const accessToken = jwt.sign({user}, process.env.SECRET, { expiresIn: '24h'});
-        res.status(200).json({accessToken})
-    })
-})
