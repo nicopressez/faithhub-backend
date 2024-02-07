@@ -5,7 +5,7 @@ const verifyToken = require('../utils/tokenVerif')
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.status(200).json({message: "success"});
 });
 
 router.post('/signup', authController.signup)
