@@ -57,13 +57,24 @@ exports.signup = [
             location: req.body.location,
             profile_picture: req.file ? req.file.path : null,
         })
-        await user.save();
-        res.status(200).json({user:user})
-
-
-
+        const userSaved = await user.save();
+// Log person in right after signup
+        const token = jwt.sign(
+            {user:userSaved.username}, process.env.SECRET, 
+            {expiresIn: "24h"});
+        res.status(200).json({user:userSaved, token})
     })]
 
-exports.login = asyncHandler(async(req,res,next));
+exports.login = [
+    passport.authenticate("local"),
+    asyncHandler(async(req,res,next) => {
+    const user = req.body.username;
+    const secret = process.env.SECRET;
+    const token = jwt.sign({user}, secret, { expiresIn: '24h'});
+    return res.status(200).json({
+        message: "Auth passed",
+        token
+    })
+})]
 
 exports.logout = asyncHandler(async(req,res,next));
