@@ -6,8 +6,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter = require('./index');
+var authRouter = require('./auth');
 
 var app = express();
 var cors = require('cors')
@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors())
 // Passport setup
-const passport = require("./passport");
+const passport = require("./utils/passport");
 app.use(session({
   secret: process.env.SECRET, 
   resave: false,

@@ -7,6 +7,8 @@
     "serverstart": "SET DEBUG=express-locallibrary-tutorial:* & npm run devstart"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^16.4.1",
@@ -15,7 +17,10 @@
     "express-validator": "^7.0.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.1",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
   }
 }
