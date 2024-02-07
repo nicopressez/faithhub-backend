@@ -68,7 +68,10 @@ exports.signup = [
 exports.login = [
     passport.authenticate("local"),
     asyncHandler(async(req,res,next) => {
-    const user = await User.find({username: req.body.username}).exec();
+    const user = await User.findOne({username: req.body.username}).exec();
+    if (!user) {
+        return res.status(401).json({ message: "User not found" });
+    }
     const secret = process.env.SECRET;
     const token = jwt.sign({user}, secret, { expiresIn: '24h'});
     res.status(200).json({
