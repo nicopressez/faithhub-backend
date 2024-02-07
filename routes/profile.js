@@ -4,8 +4,8 @@ const profileController = require('../controllers/profileController')
 
 const verifyRefreshToken = require('../utils/tokenVerif');
 
-router.get('/', profileController.profile_get)
+router.get('/:id', profileController.profile_get)
 
-router.patch('/update', verifyRefreshToken, profileController.profile_update)
+router.patch('/:id/update', verifyRefreshToken, profileController.profile_update)
 
-router.delete('/delete',verifyRefreshToken, profileController.profile_delete)
+router.delete('/:id/delete',verifyRefreshToken, profileController.profile_delete)
