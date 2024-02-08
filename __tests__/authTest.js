@@ -73,15 +73,15 @@ test("Signup route gets back 401 if incorrect password", async function () {
 
 })  
 
-test("Login route if valid credentials", async function()  {
+ test("Login route if valid credentials", async function()  {
     const payload = {
         username: "testuserdb",
         password: "password"
     }
     const response = await request(app)
         .post("/login")
-        .set('Content-Type', 'application/json') 
-        .set('Accept', 'application/json') 
+        .set('Content-Type', /json/) 
+        .set('Accept', /json/) 
         .send(payload)
     expect(response.status).toBe(200)
     expect(response.headers["content-type"]).toMatch(/json/);
