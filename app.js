@@ -13,14 +13,8 @@ const profileRouter = require('./routes/profile')
 var app = express();
 var cors = require('cors')
 
-//Mongo setup
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
-const mongoDB = process.env.DATABASE;
-main().catch((err) => console.log(err));
-async function main() {
-  await mongoose.connect(mongoDB);
-}
+const mongoSetup = require('./mongoConfig');
+mongoSetup()
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -32,6 +26,7 @@ app.use(cors())
 
 // Passport setup
 const passport = require("./utils/passport");
+const { mongo } = require('mongoose');
 app.use(session({
   secret: process.env.SECRET, 
   resave: false,

@@ -50,7 +50,7 @@ exports.signup = [
 
         // Check if username already taken before proceeding
         const usernameUsed = await User.find({username: req.body.username});
-        if (usernameUsed) return res.status(401).json({message:"Username already in use"})
+        if (usernameUsed[0]) return res.status(401).json({message:"Username already in use"})
 
         // Username not used, continue with signup
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
