@@ -13,8 +13,7 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/'); // Set upload destination
     },
     filename: function (req, file, cb) {
-        // Generate unique filename with proper extension
-        cb(null, file.originalname); // You can customize filename as per your requirement
+        cb(null, file.fieldname + '-' + Date.now());
     }
 });
 
@@ -89,7 +88,7 @@ exports.signup = [
         const userSaved = await user.save();
 // Log person in right after signup
         const token = jwt.sign(
-            {user:userSaved.username}, process.env.SECRET, 
+            {user}, process.env.SECRET, 
             {expiresIn: "24h"});
         res.status(200).json({token})
     })]
