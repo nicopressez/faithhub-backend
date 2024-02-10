@@ -10,7 +10,7 @@ router.delete('/:id/delete',verifyRefreshToken, profileController.profile_delete
 
 router.get('/:id', profileController.profile_get)
 
-router.get('/', profileController.profile_get_username)
+router.get('/username/:id', profileController.profile_get_username)
 
 
 module.exports = router

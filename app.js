@@ -6,6 +6,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
 const profileRouter = require('./routes/profile')
@@ -39,6 +40,7 @@ app.use(passport.session());
 app.use(express.json());
 
 // Routes
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/profile', profileRouter);
@@ -58,5 +60,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json('error');
 });
+
+
 
 module.exports = app;

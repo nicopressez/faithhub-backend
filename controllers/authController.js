@@ -7,7 +7,30 @@ const asyncHandler = require('express-async-handler');
 require("dotenv").config()
 
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Set upload destination
+    },
+    filename: function (req, file, cb) {
+        // Generate unique filename with proper extension
+        cb(null, file.originalname); // You can customize filename as per your requirement
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    // Check if the file is an image
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true); // Accept the file
+    } else {
+        cb(new Error('Only image files are allowed'), false); // Reject the file
+    }
+};
+
+const upload = multer({ 
+    storage: storage,
+    fileFilter: fileFilter
+});
 
 exports.signup = [
     body("username", "Must be between 4 and 16 characters")

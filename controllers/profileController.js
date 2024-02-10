@@ -12,7 +12,7 @@ res.status(200).json({user})
 })
 
 exports.profile_get_username = asyncHandler(async(req,res,next) => {
-    const user = await User.findOne({username: req.body.username});
+    const user = await User.findOne({username: req.params.id});
     if (!user) res.status(200).json({message: "No user found"})
     if (user) res.status(400).json({message: "Username already taken"})
 })
