@@ -3,7 +3,29 @@ const { body, validationResult } = require("express-validator");
 const asyncHandler = require('express-async-handler');
 
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Set upload destination
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now());
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    // Check if the file is an image
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true); // Accept the file
+    } else {
+        cb(new Error('Only image files are allowed'), false); // Reject the file
+    }
+};
+
+const upload = multer({ 
+    storage: storage,
+    fileFilter: fileFilter
+});
 
 exports.profile_get = asyncHandler(async(req,res,next) => {
 const user = await User.findById(req.params.id)
@@ -65,7 +87,7 @@ upload.single("profile_picture"),
             await User.findByIdAndUpdate(req.params.id, {bio: req.body.bio})
         }
         if(req.body.profile_picture !== user.profile_picture){
-            await User.findByIdAndUpdate(req.params.id, {profile_picture: req.file})
+            await User.findByIdAndUpdate(req.params.id, {profile_picture: req.file ? req.file.path : null})
         }
 
         const updatedUser = await User.findById(req.params.id)
