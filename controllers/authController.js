@@ -107,3 +107,7 @@ exports.login = [
         token
     })
 })]
+
+exports.token_refresher = asyncHandler(async(req,res,next) => {
+    res.status(200).json({token: req.token});
+})

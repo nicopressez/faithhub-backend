@@ -68,7 +68,9 @@ upload.single("profile_picture"),
             await User.findByIdAndUpdate(req.params.id, {profile_picture: req.file})
         }
 
-        res.status(200).json({message: "Profile updated"})
+        const updatedUser = await User.findById(req.params.id)
+        res.status(200).json({message: "Profile updated", token: req.token,
+        user: updatedUser })
 })]
 
 exports.profile_delete = asyncHandler(async(req,res,next) => {
