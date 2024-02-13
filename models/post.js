@@ -32,6 +32,7 @@ const PostSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Comment"
     }],
+    edited: {type: Boolean, default:false}
 })
 
 module.exports = mongoose.model("Post", PostSchema)

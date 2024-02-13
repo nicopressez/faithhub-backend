@@ -15,7 +15,8 @@ const CommentSchema = new Schema({
         required: true,
         minLength: 5,
         maxLength: 1000
-    }
+    },
+    edited: {type: Boolean, default: false}
 })
 
 module.exports = mongoose.model("Comment", CommentSchema)
