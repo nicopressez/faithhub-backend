@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const Post = require('../models/post');
+const Comment = require('../models/comment');
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require('express-async-handler');
 
@@ -99,11 +101,24 @@ exports.profile_delete = asyncHandler(async(req,res,next) => {
 const user = await User.findById(req.params.id)
 if (!user) res.status(404).json({message: "No user found"})
 
-// Delete user info
+// Remove all of the user's posts and their references
+const userPosts = await Post.find({author: user._id})
+for (const post of userPosts){
+    await post.deleteOne()
+    await Comment.deleteMany({ post: post._id })
+}
+
+// Remove all of the user's comments
+await Comment.deleteMany({author: user._id})
+
+// Remove all of the user's likes
+    await Post.updateMany({ likes: user._id}, {
+        $pull: {
+            likes: user._id
+        }
+    })
+
 await User.findByIdAndDelete(req.params.id);
-
-// TODO: Also delete comments, posts and likes coming from that user
-
 res.status(200).json({message: "User deleted"})
 })
 
