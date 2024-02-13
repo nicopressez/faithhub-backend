@@ -44,7 +44,7 @@ exports.create_post = [
         const post = new Post({
             content: req.body.content,
             type: req.body.type,
-            anonymous: req.body.anonymous,
+            anonymous: req.body.anonymous ? req.body.anonymous : false,
             author: user._id
         })
         // Save post and append it to the user data
