@@ -5,6 +5,8 @@ const commentsController = require('../controllers/commentsController')
 
 const verifyRefreshToken = require('../utils/tokenVerif');
 
+ // Add/remove like to comment
+ router.post('/:id/comments/:commentid/like',verifyRefreshToken, commentsController.like)
 
   // Update one comment
   router.patch('/:id/comments/:commentid', verifyRefreshToken, commentsController.update_comment)
@@ -14,6 +16,9 @@ const verifyRefreshToken = require('../utils/tokenVerif');
 
   // Create one comment
   router.post('/:id/comments', verifyRefreshToken, commentsController.create_comment)
+
+  // Add/remove like to post
+  router.post('/:id/like',verifyRefreshToken, postsController.like)
 
   // Get all comments by post
   router.get('/:id/comments', commentsController.all_comments )

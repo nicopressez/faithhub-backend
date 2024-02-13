@@ -16,7 +16,14 @@ const CommentSchema = new Schema({
         minLength: 5,
         maxLength: 1000
     },
-    edited: {type: Boolean, default: false}
+    edited: {
+        type: Boolean, 
+        default: false
+    },
+    likes: [{
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }],
 })
 
 module.exports = mongoose.model("Comment", CommentSchema)

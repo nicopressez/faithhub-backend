@@ -14,7 +14,6 @@ const UserSchema = new Schema({
     bio: {type: String},
     church: {type: Schema.Types.ObjectId, ref:"Church"},
     connect: [{type: Schema.Types.ObjectId, ref:"Connect"}],
-    likes: [{type:Schema.Types.ObjectId, ref:"Post"}],
     preferences: 
     [
         {type: String, enum: ["prayerRequest", "discussion", "testimony"]}

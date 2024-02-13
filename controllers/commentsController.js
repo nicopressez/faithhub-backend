@@ -114,3 +114,33 @@ exports.delete_comment = asyncHandler(async(req,res,next) => {
 }
 )
 
+exports.like = asyncHandler(async(req,res,next) => {
+    // Get comment
+    const comment = await Comment.findById(req.params.commentid, "likes");
+    const user = req.user
+
+    const alreadyLiked = comment.likes.some(likeId => likeId.equals(user._id))
+
+    if(alreadyLiked){
+        await Comment.findByIdAndUpdate(req.params.commentid, {
+            $pull: {
+                likes: user._id
+            }
+        });
+        res.status(200).json({
+            message: "Like removed",
+            token: req.token
+        })
+    } else {
+        await Comment.findByIdAndUpdate(req.params.commentid, {
+            $push:{
+                likes: user._id
+            }
+        });
+        res.status(200).json({
+            message: "Like added",
+            token: req.token
+        })
+    }
+})
+

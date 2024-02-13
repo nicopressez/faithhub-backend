@@ -119,3 +119,34 @@ exports.delete_post = asyncHandler(async(req,res,next) => {
         token: req.token
     })
 })
+
+exports.like = asyncHandler(async(req,res,next) => {
+    // Get the post
+    const post = await Post.findById(req.params.id, "likes")
+    const user = req.user
+    const alreadyLiked = post.likes.some(likeId => likeId.equals(user._id))
+
+    // Update depending on if the user already liked
+    if (alreadyLiked){
+        await Post.findByIdAndUpdate(req.params.id, {
+            $pull: {
+                likes: user._id
+            }
+        });
+        res.status(200).json({
+            message: "Like removed",
+            token: req.token
+        })
+    } else {
+        await Post.findByIdAndUpdate(req.params.id, {
+            $push:{
+                likes: user._id
+            }
+        });
+        res.status(200).json({
+            message: "Like added",
+            token: req.token
+        })
+    }
+
+})
