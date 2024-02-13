@@ -25,13 +25,10 @@ const verifyRefreshToken = require('../utils/tokenVerif');
   router.delete('/:id', verifyRefreshToken, postsController.delete_post)
 
   // Get all posts
-  router.get('/all', postsController.all_posts_get)
+  router.get('/all', verifyRefreshToken, postsController.all_posts_get)
 
   // Get posts by user
   router.get('/user/:userid', postsController.user_posts)
-
-  // Get filtered posts
-  router.get('/filter', postsController.filtered_posts_get)
 
   // Create post
   router.post('/', verifyRefreshToken, postsController.create_post)
