@@ -114,24 +114,9 @@ exports.preferences_update = asyncHandler(async(req,res,next) => {
     if (!user) return res.status(404).json({message: "User not found"})
 
 // Check differences and apply updates
-    if (req.body.prayerRequest !== user.preferences.prayerRequest){
+    if (req.body.preferences !== user.preferences){
         await User.findByIdAndUpdate(req.params.id, {
-            preferences: {
-                prayerRequest: req.body.prayerRequest
-        }});
-    };
-    if (req.body.discussion !== user.preferences.discussion){
-        await User.findByIdAndUpdate(req.params.id, {
-            preferences: {
-                discussion: req.body.discussion
-            }
-        });
-    };
-    if (req.body.testimony !== user.preferences.testimony){
-        await User.findByIdAndUpdate(req.params.id, {
-            preferences: {
-                testimony: req.body.testimony
-            }
+            preferences: req.body.preferences
         });
     };
 // Send back token and user info
