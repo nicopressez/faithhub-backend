@@ -9,12 +9,12 @@ const UserSchema = new Schema({
     profile_picture: {type: String},
     cover_picture: {type: String},
     location: {type: String},
-    friends: [{type: Schema.Types.ObjectId, ref:"user"}],
-    posts: [{type: Schema.Types.ObjectId, ref:"post"}],
+    friends: [{type: Schema.Types.ObjectId, ref:"User"}],
+    posts: [{type: Schema.Types.ObjectId, ref:"Post"}],
     bio: {type: String},
-    church: {type: Schema.Types.ObjectId, ref:"church"},
-    connect: [{type: Schema.Types.ObjectId, ref:"connect"}],
-    likes: [{type:Schema.Types.ObjectId, ref:"post"}],
+    church: {type: Schema.Types.ObjectId, ref:"Church"},
+    connect: [{type: Schema.Types.ObjectId, ref:"Connect"}],
+    likes: [{type:Schema.Types.ObjectId, ref:"Post"}],
 })
 
 UserSchema.virtual('full_name').get(function () {
