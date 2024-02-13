@@ -101,3 +101,41 @@ if (!user) res.status(404).json({message: "No user found"})
 await User.findByIdAndDelete(req.params.id);
 res.status(200).json({message: "User deleted"})
 })
+
+exports.preferences_get = asyncHandler(async(req,res,next) => {
+  const userPref = await User.findById(req.params.id, "preferences")
+  if (!userPref) return res.status(404).json({message: "User not found"})
+  res.status(200).json({preferences: userPref})
+})
+
+exports.preferences_update = asyncHandler(async(req,res,next) => {
+// Check if user exists
+    const user = await User.findById(req.params.id)
+    if (!user) return res.status(404).json({message: "User not found"})
+
+// Check differences and apply updates
+    if (req.body.prayerRequest !== user.preferences.prayerRequest){
+        await User.findByIdAndUpdate(req.params.id, {
+            preferences: {
+                prayerRequest: req.body.prayerRequest
+        }});
+    };
+    if (req.body.discussion !== user.preferences.discussion){
+        await User.findByIdAndUpdate(req.params.id, {
+            preferences: {
+                discussion: req.body.discussion
+            }
+        });
+    };
+    if (req.body.testimony !== user.preferences.testimony){
+        await User.findByIdAndUpdate(req.params.id, {
+            preferences: {
+                testimony: req.body.testimony
+            }
+        });
+    };
+// Send back token and user info
+    const updatedUser = await User.findById(req.params.id)
+        res.status(200).json({message: "Preferences updated", token: req.token,
+        user: updatedUser })
+})
