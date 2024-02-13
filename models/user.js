@@ -15,6 +15,7 @@ const UserSchema = new Schema({
     church: {type: Schema.Types.ObjectId, ref:"Church"},
     connect: [{type: Schema.Types.ObjectId, ref:"Connect"}],
     likes: [{type:Schema.Types.ObjectId, ref:"Post"}],
+    preferences: {type: Schema.Types.ObjectId, ref:"Preferences"}
 })
 
 UserSchema.virtual('full_name').get(function () {
