@@ -109,7 +109,15 @@ for (const post of userPosts){
 }
 
 // Remove all of the user's comments
-await Comment.deleteMany({author: user._id})
+const userComments = await Comment.find({author: user._id})
+for (const comment of userComments){
+    await comment.deleteOne()
+    await Post.findOneAndUpdate({comments: comment._id,}, {
+        $pull :{
+            comments: comment._id
+        }
+    })
+}
 
 // Remove all of the user's likes
     await Post.updateMany({ likes: user._id}, {
