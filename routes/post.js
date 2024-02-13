@@ -27,6 +27,9 @@ const verifyRefreshToken = require('../utils/tokenVerif');
   // Get all posts
   router.get('/all', postsController.all_posts_get)
 
+  // Get posts by user
+  router.get('/user/:userid', postsController.user_posts)
+
   // Get filtered posts
   router.get('/filter', postsController.filtered_posts_get)
 
