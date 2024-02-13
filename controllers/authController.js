@@ -85,7 +85,8 @@ exports.signup = [
             location: req.body.location,
             profile_picture: req.file ? req.file.path : null,
         })
-        const userSaved = await user.save();
+        
+        await user.save();
 // Log person in right after signup
         const token = jwt.sign(
             {user}, process.env.SECRET, 
