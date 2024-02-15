@@ -1,17 +1,18 @@
 const Comment = require('../models/comment')
 const User = require('../models/user')
-const Post = require('../models/comment')
+const Post = require('../models/post')
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require('express-async-handler');
 
 // Get all comments from post
 exports.all_comments = asyncHandler(async(req,res,next) => {
     const post = await Post.findById(req.params.id, "comments")
+
     if(!post){
-        res.status(404).json({
-            message: "Post not found"
+        return res.status(404).json({
+            message: "Post not found",
         });
-    }
+    } else {
     const comments = await Comment.find({
         _id:{$in: post.comments}
     })
@@ -20,6 +21,7 @@ exports.all_comments = asyncHandler(async(req,res,next) => {
         message: "Success",
         comments: comments
     })
+}
 })
 
 exports.create_comment = [
@@ -43,10 +45,10 @@ exports.create_comment = [
         };
         const comment = new Comment({
             author: req.user._id,
-            content: req.user.content
+            content: req.body.content
         })
         const newComment = await comment.save();
-        await Post.findByIdAndUpdate(req.user._id,{
+        await Post.findByIdAndUpdate(req.params.id,{
             $push: {
                 comments: newComment._id
             }

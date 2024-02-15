@@ -5,6 +5,11 @@ const commentsController = require('../controllers/commentsController')
 
 const verifyRefreshToken = require('../utils/tokenVerif');
 
+  // Test route
+  router.get('/', function(req, res, next) {
+    res.status(200).json({message: "Post router works"});
+  });
+
  // Add/remove like to comment
  router.post('/:id/comments/:commentid/like',verifyRefreshToken, commentsController.like)
 
@@ -38,10 +43,7 @@ const verifyRefreshToken = require('../utils/tokenVerif');
   // Create post
   router.post('/', verifyRefreshToken, postsController.create_post)
 
-  // Test route
-  router.get('/', function(req, res, next) {
-    res.status(200).json({message: "Post router works"});
-  });
+  module.exports = router
 
 
 

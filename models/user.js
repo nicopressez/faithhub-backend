@@ -16,9 +16,9 @@ const UserSchema = new Schema({
     connect: [{type: Schema.Types.ObjectId, ref:"Connect"}],
     preferences: 
     [
-        {type: String, enum: ["prayerRequest", "discussion", "testimony"]}
+        {type: String, enum: ["Prayer Request", "Discussion", "Testimony"]}
     ],
-    default: ['prayerRequest', 'discussion', 'testimony']
+    default: ['Prayer Request', 'Discussion', 'Testimony']
 })
 
 UserSchema.virtual('full_name').get(function () {
