@@ -141,14 +141,14 @@ exports.preferences_update = asyncHandler(async(req,res,next) => {
     const user = await User.findById(req.params.id)
     if (!user) return res.status(404).json({message: "User not found"})
 
-// Check differences and apply updates
-    if (req.body.preferences !== user.preferences){
-        await User.findByIdAndUpdate(req.params.id, {
-            preferences: req.body.preferences
-        });
-    };
+// Apply updates
+    await User.findByIdAndUpdate(req.params.id, {
+        preferences: req.body
+    });
+
 // Send back token and user info
     const updatedUser = await User.findById(req.params.id)
-        res.status(200).json({message: "Preferences updated", token: req.token,
+        res.status(200).json({message: "Preferences updated",
+         token: req.token,
         user: updatedUser })
 })
