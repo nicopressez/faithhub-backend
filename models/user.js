@@ -14,11 +14,10 @@ const UserSchema = new Schema({
     bio: {type: String},
     church: {type: Schema.Types.ObjectId, ref:"Church"},
     connect: [{type: Schema.Types.ObjectId, ref:"Connect"}],
-    preferences: 
-    [
-        {type: String, enum: ["Prayer Request", "Discussion", "Testimony"]}
-    ],
-    default: ['Prayer Request', 'Discussion', 'Testimony']
+    preferences: {
+        type: [{type: String, enum: ["Prayer Request", "Discussion", "Testimony"]}],
+        default: ['Prayer Request', 'Discussion', 'Testimony']
+    }
 })
 
 UserSchema.virtual('full_name').get(function () {
