@@ -7,12 +7,19 @@ const asyncHandler = require('express-async-handler');
 exports.all_posts_get = asyncHandler(async(req,res,next) => {
     const userPref = req.user.preferences
 
-    const posts = await Post.find({ type: {$in: userPref}}).populate({
+    const posts = await Post.find({ type: {$in: userPref}})
+    .populate({
         path: "author",
         select: "profile_picture first_name last_name"
     })
-
-    res.send(200).json({data: posts, token: req.token , user:req.user})
+    .populate({
+        path:"comments",
+        populate: {
+            path: "author",
+            select: "profile_picture first_name last_name"
+        }
+    })
+    res.status(200).json({data: posts, token: req.token , user:req.user})
 })
 
 // Get posts based on user
