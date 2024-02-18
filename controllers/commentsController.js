@@ -4,6 +4,26 @@ const Post = require('../models/post')
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require('express-async-handler');
 
+// Get top 2 comments of post, sorted by likes
+exports.top_comments = asyncHandler(async(req,res,next) => {
+    const post = await Post.findById(req.params.id, "comments")
+
+    if(!post){
+        return res.status(404).json({
+            message: "Post not found",
+        });
+    } else {
+    const comments = await Comment.find({
+        _id:{$in: post.comments}
+    }).sort({likes: -1})
+      .limit(2)
+    res.status(200).json({
+        message:"Success",
+        comments
+    })
+}
+})
+
 // Get all comments from post
 exports.all_comments = asyncHandler(async(req,res,next) => {
     const post = await Post.findById(req.params.id, "comments")
@@ -14,7 +34,7 @@ exports.all_comments = asyncHandler(async(req,res,next) => {
         });
     } else {
     const comments = await Comment.find({
-        _id:{$in: post.comments}
+        _id:{$in: post.comments}.sort({likes: -1})
     })
 
     res.status(200).json({

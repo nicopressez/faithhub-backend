@@ -25,6 +25,9 @@ const verifyRefreshToken = require('../utils/tokenVerif');
   // Add/remove like to post
   router.post('/:id/like',verifyRefreshToken, postsController.like)
 
+  // Get top two comments by post
+  router.get('/:id/topcomments', commentsController.top_comments )
+
   // Get all comments by post
   router.get('/:id/comments', commentsController.all_comments )
 
