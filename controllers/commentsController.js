@@ -7,6 +7,7 @@ const asyncHandler = require('express-async-handler');
 // Get top 2 comments of post, sorted by likes
 exports.top_comments = asyncHandler(async(req,res,next) => {
     const post = await Post.findById(req.params.id, "comments")
+                    
 
     if(!post){
         return res.status(404).json({
@@ -17,6 +18,10 @@ exports.top_comments = asyncHandler(async(req,res,next) => {
         _id:{$in: post.comments}
     }).sort({likes: -1})
       .limit(2)
+      .populate({
+        path: "author",
+        select: "profile_picture first_name last_name"
+    }); 
     res.status(200).json({
         message:"Success",
         comments
@@ -35,7 +40,10 @@ exports.all_comments = asyncHandler(async(req,res,next) => {
     } else {
     const comments = await Comment.find({
         _id:{$in: post.comments}.sort({likes: -1})
-    })
+    }).populate({
+        path: "author",
+        select: "profile_picture first_name last_name"
+    }); 
 
     res.status(200).json({
         message: "Success",
