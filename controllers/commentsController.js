@@ -39,8 +39,9 @@ exports.all_comments = asyncHandler(async(req,res,next) => {
         });
     } else {
     const comments = await Comment.find({
-        _id:{$in: post.comments}.sort({likes: -1})
-    }).populate({
+        _id:{$in: post.comments}})
+      .sort({likes: -1})
+      .populate({
         path: "author",
         select: "profile_picture first_name last_name"
     }); 

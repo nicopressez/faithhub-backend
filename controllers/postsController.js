@@ -18,6 +18,8 @@ exports.all_posts_get = asyncHandler(async(req,res,next) => {
             path: "author",
             select: "profile_picture first_name last_name"
         }
+    }).sort({
+        date: -1
     })
     res.status(200).json({data: posts, token: req.token , user:req.user})
 })
