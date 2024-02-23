@@ -89,12 +89,14 @@ exports.update_post = [
 
         if (post.type !== req.body.type) {
             await Post.findByIdAndUpdate(req.params.id, {
-                type: req.body.type
+                type: req.body.type,
+                edited: true
             })
         };
         if (post.content !== req.body.content){
             await Post.findByIdAndUpdate(req.params.id, {
-                content: req.body.content
+                content: req.body.content,
+                edited: true
             })
         };
         const updatedPost = await Post.findById(req.params.id)
