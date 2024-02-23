@@ -57,9 +57,23 @@ exports.create_post = [
             author: user._id
         })
         // Save post and append it to the user data
-        const newPost = await post.save();
+        const addedPost = await post.save();
         const newUser = await User.findByIdAndUpdate(req.user._id, {
-            $push: {posts: newPost._id}
+            $push: {posts: addedPost._id}
+
+        
+        })
+        const newPost = await Post.findById(addedPost._id)
+        .populate({
+            path: "author",
+            select: "profile_picture first_name last_name"
+        })
+        .populate({
+            path:"comments",
+            populate: {
+                path: "author",
+                select: "profile_picture first_name last_name"
+            }
         })
         // Send back the new post, token and updated user
         res.status(200).json({
