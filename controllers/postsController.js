@@ -31,7 +31,7 @@ exports.user_posts = asyncHandler(async(req,res,next) => {
         select: "profile_picture first_name last_name"
     }); 
 
-    res.status(200).json({data: posts})
+    res.status(200).json({data: posts, token: req.token , user:req.user})
 })
 
 // Create one post

@@ -41,7 +41,7 @@ const verifyRefreshToken = require('../utils/tokenVerif');
   router.get('/all', verifyRefreshToken, postsController.all_posts_get)
 
   // Get posts by user
-  router.get('/user/:userid', postsController.user_posts)
+  router.get('/user/:userid', verifyRefreshToken, postsController.user_posts)
 
   // Create post
   router.post('/', verifyRefreshToken, postsController.create_post)
