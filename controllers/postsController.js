@@ -26,7 +26,10 @@ exports.all_posts_get = asyncHandler(async(req,res,next) => {
 
 // Get posts based on user
 exports.user_posts = asyncHandler(async(req,res,next) => {
-    const posts = await Post.find({author: req.params.userid})
+    const posts = await Post.find({
+        author: req.params.userid,
+        anonymous:false
+    })
     .populate({
         path: "author",
         select: "profile_picture first_name last_name"
