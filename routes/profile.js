@@ -4,6 +4,9 @@ const profileController = require('../controllers/profileController')
 
 const verifyRefreshToken = require('../utils/tokenVerif');
 
+// Search bar 
+router.get('/searchbar', profileController.searchbar)
+
 router.get('/:id/preferences', profileController.preferences_get)
 
 router.patch('/:id/preferences', verifyRefreshToken,  profileController.preferences_update)
@@ -15,9 +18,6 @@ router.delete('/:id/delete',verifyRefreshToken, profileController.profile_delete
 router.get('/:id', profileController.profile_get)
 
 router.get('/username/:id', profileController.profile_get_username)
-
-// Search bar 
-router.get('/searchbar', profileController.searchbar)
 
 
 

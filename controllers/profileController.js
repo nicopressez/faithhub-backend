@@ -154,48 +154,50 @@ exports.preferences_update = asyncHandler(async(req,res,next) => {
 })
 
 exports.searchbar = asyncHandler(async(req,res,next) => {
-    const { query } = req.query
+    const { query } = req.query;
+    const terms = query.trim().split(/\s+/); // Split query into terms by whitespace
+
+    const regexTerms = terms.map(term => new RegExp(term, 'i')); // Create case-insensitive regex for each term
+
     // Search for corresponding first or last names
-    const users = await User.find({
-        $or: [
-            { first_name: { $regex: query, $options: 'i'} },
-            { last_name: { $regex: query, $options: 'i'} },
-            { full_name: { $regex: query, $options: 'i'} }
-        ]
-    })
+    const users = await User.aggregate([
+        {
+            $match: {
+                $or: [
+                    { $and: [ { first_name: { $regex: regexTerms[0] } }, { last_name: { $regex: regexTerms[1] || regexTerms[0] } } ] }, // Search for first and last name combination
+                    { first_name: { $regex: regexTerms[0] } }, // Search for first name
+                    { last_name: { $regex: regexTerms[0] } } // Search for last name
+                ]
+            }
+        },
+        {
+            $project: {
+                first_name: 1,
+                last_name: 1,
+                profile_picture: 1,
+                full_name: { $concat: [ "$first_name", " ", "$last_name" ] },
+                matchScore: {
+                    $cond: [
+                        { $eq: [ "$full_name", query ] }, // Exact match
+                        5,
+                        {
+                            $add: [
+                                { $cond: [ { $eq: [ { $toLower: "$full_name" }, { $toLower: query } ] }, 2, 0 ] }, // Case sensitivity
+                                { $cond: [ { $regexMatch: { input: "$full_name", regex: new RegExp(`\\b${query}\\b`, "i") } }, 3, 0 ] }, // Word boundary match
+                                { $cond: [ { $or: [ { $ne: [ "$profile_picture", null ] }, { $ne: [ "$bio", null ] }, { $ne: [ "$location", null ] } ] }, 1, 0 ] } // Presence of additional information
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            $sort: { matchScore: -1 } // Sort by matchScore in descending order
+        },
+        {
+            $limit: 3 // Limit to top 3 results
+        }
+    ]);
 
-    // Calculate match score for each user
-users.forEach(user => {
-    let matchScore = 0;
-
-    // Exact match
-    if (user.full_name === query) {
-        matchScore += 5;
-    }
-
-    // Case sensitivity
-    if (user.full_name.toLowerCase() === query.toLowerCase()) {
-        matchScore += 2; 
-    }
-
-    // Word boundary matching
-    if (user.full_name.match(new RegExp('\\b' + query + '\\b', 'i'))) {
-        matchScore += 3; 
-    }
-
-    // Presence of profile picture or additional information
-    if (user.profile_picture || user.bio || user.location) {
-        matchScore += 1; 
-    }
-
-    user.matchScore = matchScore;
+    res.status(200).json({ success: true, data: users });
 });
-
-// Sort users based on match score
-users.sort((a, b) => b.matchScore - a.matchScore);
-
-    // Limit to top 3 results
-    const topUsers = users.slice(0, 3);
-
-    res.status(200).json({ success: true, data: topUsers });
-})  
