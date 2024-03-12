@@ -152,3 +152,50 @@ exports.preferences_update = asyncHandler(async(req,res,next) => {
          token: req.token,
         user: updatedUser })
 })
+
+exports.searchbar = asyncHandler(async(req,res,next) => {
+    const { query } = req.query
+    // Search for corresponding first or last names
+    const users = await User.find({
+        $or: [
+            { first_name: { $regex: query, $options: 'i'} },
+            { last_name: { $regex: query, $options: 'i'} },
+            { full_name: { $regex: query, $options: 'i'} }
+        ]
+    })
+
+    // Calculate match score for each user
+users.forEach(user => {
+    let matchScore = 0;
+
+    // Exact match
+    if (user.full_name === query) {
+        matchScore += 5;
+    }
+
+    // Case sensitivity
+    if (user.full_name.toLowerCase() === query.toLowerCase()) {
+        matchScore += 2; 
+    }
+
+    // Word boundary matching
+    if (user.full_name.match(new RegExp('\\b' + query + '\\b', 'i'))) {
+        matchScore += 3; 
+    }
+
+    // Presence of profile picture or additional information
+    if (user.profile_picture || user.bio || user.location) {
+        matchScore += 1; 
+    }
+
+    user.matchScore = matchScore;
+});
+
+// Sort users based on match score
+users.sort((a, b) => b.matchScore - a.matchScore);
+
+    // Limit to top 3 results
+    const topUsers = users.slice(0, 3);
+
+    res.status(200).json({ success: true, data: topUsers });
+})  

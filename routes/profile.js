@@ -16,6 +16,9 @@ router.get('/:id', profileController.profile_get)
 
 router.get('/username/:id', profileController.profile_get_username)
 
+// Search bar 
+router.get('/searchbar', profileController.searchbar)
+
 
 
 module.exports = router
