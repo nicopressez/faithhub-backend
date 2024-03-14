@@ -26,4 +26,4 @@ primary_region = 'cdg'
   
   [mounts]
   source = "uploads"
-  destination = "/uploads"
+  destination = "/app/uploads"
